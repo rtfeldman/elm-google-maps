@@ -102,15 +102,14 @@ onValueChanged tagger =
 view : Model -> Html Msg
 view model =
     let
-        currentDate =
+        dateString =
             Date.Format.format "%Y-%m-%d %H:%M:%S" model
     in
         div []
             [ button [ onClick AddADay ] [ text "Add a Day" ]
             , button [ onClick Add30Days ] [ text "Add 30 Days" ]
-            , Html.text (toString model)
-            , br [] []
-            , datePicker [ attribute "date" currentDate, onValueChanged DateChanged ] []
+            , Html.p [] [ Html.text (toString model) ]
+            , datePicker [ attribute "date" dateString, onValueChanged DateChanged ] []
             ]
 
 
