@@ -6,6 +6,7 @@
     "source-directories": [
         "."
     ],
+    "native-modules": true,
     "exposed-modules": [],
     "dependencies": {
         "elm-lang/core": "4.0.5 <= v < 5.0.0",

@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Elm • Polymer</title>
-  <script src="bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+
   <link rel="import" href="bower_components/paper-date-picker/paper-date-picker.html">
 
   <script type="text/javascript" src="elm.js"></script>
@@ -14,10 +14,23 @@
 
 <body>
 </body>
-
-
-<script type="text/javascript">
-     var app = Elm.Main.fullscreen();
+<script>
+ (function() {
+     if ('registerElement' in document
+         && 'import' in document.createElement('link')
+         && 'content' in document.createElement('template')) {
+         // platform is good!
+     } else {
+         // polyfill the platform!
+         var e = document.createElement('script');
+         e.src = '/bower_components/webcomponentsjs/webcomponents-lite.min.js';
+         document.body.appendChild(e);
+         console.log("polyfill for webcomponents");
+     }
+ })();
 </script>
 
+<script type="text/javascript">
+ var app = Elm.Main.fullscreen();
+</script>
 </html>

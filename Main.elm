@@ -10,6 +10,7 @@ import Time exposing (Time)
 import Json.Decode as Json
 import Date.Format
 import String
+import JsonDateDecode
 
 
 main : Program Never
@@ -76,22 +77,16 @@ update msg model =
             addTime (30 * day) model
 
         DateChanged val ->
-            valueToDate val |> Result.withDefault model
+            JsonDateDecode.toDate val |> Result.withDefault model
 
 
 valueToDate : Json.Value -> Result String Date
 valueToDate val =
     let
-        dateString =
-            toString val |> Debug.log "dateString"
-
-        dateString' =
-            if String.startsWith "<" dateString && String.endsWith ">" dateString then
-                String.slice 1 -1 dateString
-            else
-                dateString
+        dateResult =
+            JsonDateDecode.toDate val |> Debug.log "dateResult"
     in
-        Date.fromString dateString' |> Debug.log "dateResult"
+        dateResult
 
 
 detailValue : Json.Decoder Json.Value
@@ -108,10 +103,7 @@ view : Model -> Html Msg
 view model =
     let
         currentDate =
-            if (Date.toTime model) == 0 then
-                "April 1, 2016"
-            else
-                Date.Format.format "%Y-%m-%d %H:%M:%S" model |> Debug.log "currentDate"
+            Date.Format.format "%Y-%m-%d %H:%M:%S" model
     in
         div []
             [ button [ onClick AddADay ] [ text "Add a Day" ]
@@ -119,7 +111,6 @@ view model =
             , Html.text (toString model)
             , br [] []
             , datePicker [ attribute "date" currentDate, onValueChanged DateChanged ] []
-              --, datePicker [ attribute "date" currentDate ] []
             ]
 
 
