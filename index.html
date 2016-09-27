@@ -1,40 +1,21 @@
 <!DOCTYPE HTML>
 <html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Elm • Polymer</title>
 
-<head>
-  <meta charset="UTF-8">
-  <title>Elm • Polymer</title>
+        <!-- Chrome does not need the following polyfill, but when I try a conditional load per
+             https://www.polymer-project.org/1.0/docs/browsers and then vulcanize this file,
+             the result does not work in Firefox. So load it unconditionally. -->
+        <script src="bower_components/webcomponentsjs/webcomponents-lite.min.js"></script>
 
-  <link href='https://fonts.googleapis.com/css?family=Roboto:400,300,500|Roboto+Mono|Roboto+Condensed:400,700&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-  <link rel="stylesheet" href="https://code.getmdl.io/1.2.0/material.teal-red.min.css" />
-
-  <link rel="import" href="bower_components/paper-date-picker/paper-date-picker.html">
-
-  <script type="text/javascript" src="elm.js"></script>
-
-  <!-- <link rel="stylesheet" href="style.css"> -->
-</head>
-
-<body>
-</body>
-<script>
- (function() {
-     if ('registerElement' in document
-         && 'import' in document.createElement('link')
-         && 'content' in document.createElement('template')) {
-         // platform is good!
-     } else {
-         // polyfill the platform!
-         var e = document.createElement('script');
-         e.src = '/bower_components/webcomponentsjs/webcomponents-lite.min.js';
-         document.body.appendChild(e);
-         console.log("polyfill for webcomponents");
-     }
- })();
-</script>
-
-<script type="text/javascript">
- var app = Elm.Main.fullscreen();
-</script>
+        <!-- Load the data-picker component definition -->
+        <link rel="import" href="bower_components/paper-date-picker/paper-date-picker.html">
+    </head>
+    <body>
+        <script type="text/javascript" src="elm.js"></script>
+        <script type="text/javascript">
+         var app = Elm.Main.fullscreen();
+        </script>
+    </body>
 </html>
