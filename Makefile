@@ -1,4 +1,9 @@
+default: build
+
+setup:
+	bower install
+
 build: elm.js
 
-elm.js: Main.elm JsonDateDecode.elm Native/JsonDateDecode.js
-	elm make Main.elm --output=elm.js
+elm.js: src/Main.elm src/JsonDateDecode.elm src/Native/JsonDateDecode.js
+	elm make src/Main.elm --yes --output=elm.js

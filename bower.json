@@ -1,0 +1,20 @@
+{
+  "name": "elm-polymer-calendar",
+  "homepage": "https://github.com/fredcy/elm-polymer-calendar",
+  "authors": [
+    "Fred Yankowski <fcy@imsa.edu>"
+  ],
+  "description": "Using a Polymer component with Elm",
+  "main": "index.html",
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "paper-date-picker": "polymer-paper-datepicker#^1.2.0"
+  }
+}
