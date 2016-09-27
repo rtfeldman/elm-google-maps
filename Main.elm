@@ -8,6 +8,8 @@ import Task
 import Date exposing (Date)
 import Time exposing (Time)
 import Json.Decode as Json
+import Date.Format
+import String
 
 
 main : Program Never
@@ -41,7 +43,7 @@ type Msg
     = UpdateDate Date
     | AddADay
     | Add30Days
-    | DateChanged String
+    | DateChanged Json.Value
 
 
 nowCmd : (Date -> a) -> Cmd a
@@ -74,15 +76,30 @@ update msg model =
             addTime (30 * day) model
 
         DateChanged val ->
-            Debug.log val model
+            valueToDate val |> Result.withDefault model
 
 
-detailValue : Json.Decoder String
+valueToDate : Json.Value -> Result String Date
+valueToDate val =
+    let
+        dateString =
+            toString val |> Debug.log "dateString"
+
+        dateString' =
+            if String.startsWith "<" dateString && String.endsWith ">" dateString then
+                String.slice 1 -1 dateString
+            else
+                dateString
+    in
+        Date.fromString dateString' |> Debug.log "dateResult"
+
+
+detailValue : Json.Decoder Json.Value
 detailValue =
-    Json.at [ "detail", "date" ] Json.string
+    Json.at [ "detail", "value" ] Json.value
 
 
-onValueChanged : (String -> a) -> Attribute a
+onValueChanged : (Json.Value -> a) -> Attribute a
 onValueChanged tagger =
     on "date-changed" <| Json.map tagger detailValue
 
@@ -92,15 +109,17 @@ view model =
     let
         currentDate =
             if (Date.toTime model) == 0 then
-                "2016-08-27"
+                "April 1, 2016"
             else
-                toString model
+                Date.Format.format "%Y-%m-%d %H:%M:%S" model |> Debug.log "currentDate"
     in
         div []
             [ button [ onClick AddADay ] [ text "Add a Day" ]
             , button [ onClick Add30Days ] [ text "Add 30 Days" ]
+            , Html.text (toString model)
             , br [] []
             , datePicker [ attribute "date" currentDate, onValueChanged DateChanged ] []
+              --, datePicker [ attribute "date" currentDate ] []
             ]
 
 
