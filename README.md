@@ -20,6 +20,15 @@ python3 -m http.server
 
 Browse http://localhost:8000/
 
+## Discussion
+
+The calendar component generates a JS `date-changed` event each time the user selects a date.
+The `onValueChanged` function in Main.elm sets up an Elm Html event attribute that ultimately creates a `DateChanged` message.
+The Elm Json.Decode functions do not provide a way to decode the JS `Date` value in that event,
+so the message carries the value as a Json.Decode.Value which is later converted to an Elm `Date` value via custom native code in `JsonDateDecode.toDate`.
+
+Running `make dist` will generate a "dist" directory with the minimal static web content needed to deploy the application.
+
 ## Credit
 
 This started as a direct copy of a gist by Peter Damoc (@pdamoc) and relates to
