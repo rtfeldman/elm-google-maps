@@ -85,9 +85,9 @@ detailValue =
     Json.at [ "detail", "value" ] Json.value
 
 
-onValueChanged : (Date -> a) -> Attribute a
-onValueChanged tagger =
-    on "date-changed" <| Json.map tagger (Json.customDecoder detailValue JsonDateDecode.toDate)
+dateValue : Json.Decoder Date
+dateValue =
+    Json.customDecoder detailValue JsonDateDecode.toDate
 
 
 view : Model -> Html Msg
@@ -101,7 +101,11 @@ view model =
             [ button [ onClick AddADay ] [ text "Add a Day" ]
             , button [ onClick Add30Days ] [ text "Add 30 Days" ]
             , Html.p [] [ Html.text (toString model) ]
-            , datePicker [ attribute "date" dateString, onValueChanged DateChanged ] []
+            , datePicker
+                [ attribute "date" dateString
+                , on "date-changed" (dateValue |> Json.map DateChanged)
+                ]
+                []
             ]
 
 
