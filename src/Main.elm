@@ -85,19 +85,9 @@ detailValue =
     Json.at [ "detail", "value" ] Json.value
 
 
-valueToDate : Json.Value -> Json.Decoder Date
-valueToDate value =
-    case JsonDateDecode.toDate value of
-        Ok date ->
-            Json.succeed date
-
-        Err error ->
-            Json.fail error
-
-
 onValueChanged : (Date -> a) -> Attribute a
 onValueChanged tagger =
-    on "date-changed" <| Json.map tagger (detailValue `Json.andThen` valueToDate)
+    on "date-changed" <| Json.map tagger (Json.customDecoder detailValue JsonDateDecode.toDate)
 
 
 view : Model -> Html Msg
