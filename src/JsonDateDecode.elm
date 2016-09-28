@@ -1,4 +1,4 @@
-module JsonDateDecode exposing (toDate)
+module JsonDateDecode exposing (toDate, toJson)
 
 import Date exposing (Date)
 import Json.Decode
@@ -11,3 +11,8 @@ import Native.JsonDateDecode
 toDate : Json.Decode.Value -> Result String Date
 toDate =
     Native.JsonDateDecode.toDate
+
+toJson : Date -> String
+toJson =
+    Native.JsonDateDecode.toJson
+

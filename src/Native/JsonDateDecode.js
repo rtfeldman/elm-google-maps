@@ -6,7 +6,13 @@ var _user$project$Native_JsonDateDecode = function() {
             return _elm_lang$core$Result$Err("not a date value");
         }
     }
+
+    function toJson(date) {
+        return date.toJSON();
+    }
+
     return {
         toDate: toDate,
+        toJson: toJson,
     }
 }();

@@ -102,8 +102,9 @@ onValueChanged tagger =
 view : Model -> Html Msg
 view model =
     let
+        -- convert date to String in ISO8601 format
         dateString =
-            Date.Format.format "%Y-%m-%d %H:%M:%S" model
+            JsonDateDecode.toJson model
     in
         div []
             [ button [ onClick AddADay ] [ text "Add a Day" ]
