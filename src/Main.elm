@@ -44,7 +44,7 @@ type Msg
     = UpdateDate Date
     | AddADay
     | Add30Days
-    | DateChanged Json.Value
+    | DateChanged Date
 
 
 nowCmd : (Date -> a) -> Cmd a
@@ -76,17 +76,8 @@ update msg model =
         Add30Days ->
             addTime (30 * day) model
 
-        DateChanged val ->
-            JsonDateDecode.toDate val |> Result.withDefault model
-
-
-valueToDate : Json.Value -> Result String Date
-valueToDate val =
-    let
-        dateResult =
-            JsonDateDecode.toDate val |> Debug.log "dateResult"
-    in
-        dateResult
+        DateChanged date ->
+            date
 
 
 detailValue : Json.Decoder Json.Value
@@ -94,9 +85,19 @@ detailValue =
     Json.at [ "detail", "value" ] Json.value
 
 
-onValueChanged : (Json.Value -> a) -> Attribute a
+valueToDate : Json.Value -> Json.Decoder Date
+valueToDate value =
+    case JsonDateDecode.toDate value of
+        Ok date ->
+            Json.succeed date
+
+        Err error ->
+            Json.fail error
+
+
+onValueChanged : (Date -> a) -> Attribute a
 onValueChanged tagger =
-    on "date-changed" <| Json.map tagger detailValue
+    on "date-changed" <| Json.map tagger (detailValue `Json.andThen` valueToDate)
 
 
 view : Model -> Html Msg
