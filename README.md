@@ -3,6 +3,14 @@
 This demonstrates how to incorporate a Polymer web component into an Elm application.
 In particular, it uses a `polymer-paper-date-picker` component from https://github.com/bendavis78/paper-date-picker to present a calendar and update the Elm model based on the user's choices of calendar date.
 
+## Toolchain setup
+
+```
+npm install -g elm
+npm install -g bower
+npm install -g vulcanize
+```
+
 ## Installation
 
 ```shell
