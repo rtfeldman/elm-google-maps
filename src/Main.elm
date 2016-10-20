@@ -98,17 +98,15 @@ view model =
             JsonDateDecode.toJson model
     in
         div []
-            [ button [ onClick AddADay ] [ text "Add a Day" ]
-            , button [ onClick Add30Days ] [ text "Add 30 Days" ]
-            , Html.p [] [ Html.text (toString model) ]
-            , datePicker
-                [ attribute "date" dateString
-                , on "date-changed" (dateValue |> Json.map DateChanged)
+            [
+             googleMap
+                [ attribute "latitude" "48.2082"
+                , attribute "longitude" "16.3738"
                 ]
                 []
             ]
 
 
-datePicker : List (Attribute a) -> List (Html a) -> Html a
-datePicker =
-    Html.node "paper-date-picker"
+googleMap : List (Attribute a) -> List (Html a) -> Html a
+googleMap =
+    Html.node "google-map"
