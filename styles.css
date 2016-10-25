@@ -1,0 +1,28 @@
+body {
+    font-family: Arial, serif;
+    font-size: 18px;
+    position: relative;
+    min-width: 960px;
+    padding: 20px;
+}
+
+input {
+    width: 800px;
+}
+
+label {
+    display: inline-block;
+    padding: 10px;
+}
+
+.elm-logo {
+    position: absolute;
+    top: 30px;
+    right: 30px;
+    width: 64px;
+}
+
+google-map {
+    height: 400px;
+    margin: 10px;
+}

@@ -1,27 +1,17 @@
-<!DOCTYPE HTML>
+<!doctype html>
 <html>
     <head>
-        <meta charset="UTF-8">
-        <title>Elm • Polymer</title>
+        <title>Google Maps in Elm</title>
 
-        <!-- Chrome does not need the following polyfill, but when I try a conditional load per
-             https://www.polymer-project.org/1.0/docs/browsers and then vulcanize this file,
-             the result does not work in Firefox. So load it unconditionally. -->
         <script src="bower_components/webcomponentsjs/webcomponents-lite.min.js"></script>
-
-        <!-- Load the data-picker component definition -->
         <link rel="import" href="bower_components/google-map/google-map.html">
 
-        <style>
-          google-map {
-            height: 600px;
-          }
-        </style>
+        <link rel="stylesheet" href="styles.css">
     </head>
     <body>
-        <script type="text/javascript" src="elm.js"></script>
+        <script type="text/javascript" src="app.js"></script>
         <script type="text/javascript">
-         var app = Elm.Main.fullscreen();
+          var app = Elm.Main.fullscreen();
         </script>
     </body>
 </html>

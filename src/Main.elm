@@ -1,24 +1,17 @@
 module Main exposing (..)
 
 import Html exposing (..)
-import Html.App as App
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
-import Task
-import Date exposing (Date)
-import Time exposing (Time)
-import Json.Decode as Json
-import Date.Format
-import String
-import JsonDateDecode
+import Json.Decode as Decode exposing (..)
 
 
-main : Program Never
+main : Program Never Model Msg
 main =
-    App.program
+    Html.program
         { init = init
         , view = view
-        , update = \msg m -> ( update msg m, Cmd.none )
+        , update = update
         , subscriptions = \_ -> Sub.none
         }
 
@@ -28,12 +21,14 @@ main =
 
 
 type alias Model =
-    Date
+    { latitude : Float
+    , longitude : Float
+    }
 
 
-init : ( Model, Cmd Msg )
+init : ( Model, Cmd msg )
 init =
-    ( Date.fromTime 0, nowCmd UpdateDate )
+    ( { latitude = 48.2082, longitude = 16.3738 }, Cmd.none )
 
 
 
@@ -41,72 +36,87 @@ init =
 
 
 type Msg
-    = UpdateDate Date
-    | AddADay
-    | Add30Days
-    | DateChanged Date
+    = SetLatitude Float
+    | SetLongitude Float
+    | SetLatLong Float Float
 
 
-nowCmd : (Date -> a) -> Cmd a
-nowCmd tagger =
-    Task.perform (\_ -> tagger (Date.fromTime 0)) tagger Date.now
-
-
-addTime : Time -> Date -> Date
-addTime time date =
-    Date.toTime date
-        |> (+) time
-        |> Date.fromTime
-
-
-day : Time
-day =
-    24 * Time.hour
-
-
-update : Msg -> Model -> Model
+update : Msg -> Model -> ( Model, Cmd msg )
 update msg model =
-    case Debug.log "msg" msg of
-        UpdateDate newTime ->
-            newTime
+    case msg of
+        SetLatitude latitude ->
+            { model | latitude = latitude } ! []
 
-        AddADay ->
-            addTime day model
+        SetLongitude longitude ->
+            { model | longitude = longitude } ! []
 
-        Add30Days ->
-            addTime (30 * day) model
-
-        DateChanged date ->
-            date
-
-
-detailValue : Json.Decoder Json.Value
-detailValue =
-    Json.at [ "detail", "value" ] Json.value
-
-
-dateValue : Json.Decoder Date
-dateValue =
-    Json.customDecoder detailValue JsonDateDecode.toDate
-
-
-view : Model -> Html Msg
-view model =
-    let
-        -- convert date to String in ISO8601 format
-        dateString =
-            JsonDateDecode.toJson model
-    in
-        div []
-            [
-             googleMap
-                [ attribute "latitude" "48.2082"
-                , attribute "longitude" "16.3738"
-                ]
-                []
-            ]
+        SetLatLong latitude longitude ->
+            { model | latitude = latitude, longitude = longitude } ! []
 
 
 googleMap : List (Attribute a) -> List (Html a) -> Html a
 googleMap =
     Html.node "google-map"
+
+
+view : Model -> Html Msg
+view model =
+    div []
+        [ div []
+            [ label [] [ text "Latitude" ]
+            , input
+                [ type_ "range"
+                , attribute "min" "-1800000"
+                , attribute "max" "1800000"
+                , defaultValue (toString model.latitude)
+                , onChange SetLatitude
+                ]
+                []
+            , span [] [ text (toString model.latitude) ]
+            ]
+        , div []
+            [ label [] [ text "Longitude" ]
+            , input
+                [ type_ "range"
+                , attribute "min" "-1800000"
+                , attribute "max" "1800000"
+                , defaultValue (toString model.longitude)
+                , onChange SetLongitude
+                ]
+                []
+            , span [] [ text (toString model.longitude) ]
+            ]
+        , img
+            [ class "elm-logo"
+            , src "http://package.elm-lang.org/assets/elm_logo.svg"
+            ]
+            []
+        , googleMap [ attribute "latitude" (toString model.latitude), attribute "longitude" (toString model.longitude), attribute "drag-events" "true", recordLatLongOnDrag ] []
+        ]
+
+
+recordLatLongOnDrag : Attribute Msg
+recordLatLongOnDrag =
+    on "google-map-drag" <|
+        map2 SetLatLong
+            (at [ "target", "latitude" ] float)
+            (at [ "target", "longitude" ] float)
+
+
+onChange : (Float -> Msg) -> Attribute Msg
+onChange toMsg =
+    Decode.string
+        |> Decode.andThen decodeLatLong
+        |> Decode.at [ "target", "value" ]
+        |> Decode.map toMsg
+        |> on "change"
+
+
+decodeLatLong : String -> Decoder Float
+decodeLatLong str =
+    case Decode.decodeString Decode.float str of
+        Ok num ->
+            Decode.succeed (num / 10000)
+
+        Err err ->
+            Decode.fail err
