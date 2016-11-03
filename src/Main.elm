@@ -91,7 +91,13 @@ view model =
             , src "http://package.elm-lang.org/assets/elm_logo.svg"
             ]
             []
-        , googleMap [ attribute "latitude" (toString model.latitude), attribute "longitude" (toString model.longitude), attribute "drag-events" "true", recordLatLongOnDrag ] []
+        , googleMap
+            [ attribute "latitude" (toString model.latitude)
+            , attribute "longitude" (toString model.longitude)
+            , attribute "drag-events" "true"
+            , recordLatLongOnDrag
+            ]
+            []
         ]
 
 
